@@ -8,8 +8,8 @@ Use this while screen-recording: terminal on the left, optional browser with `/d
 cd agentic-browser-ops-platform
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-export SOMAOS_DEMO_KEY="demo-twitter-2026"
-uvicorn browser_ops.api:app --host 127.0.0.1 --port 8765
+export SOMAOS_DEMO_KEY="sk_demo_local"
+uvicorn browser_ops.api:app --host 127.0.0.1 --port 8080
 ```
 
 ## Voice-over beats
@@ -25,21 +25,23 @@ uvicorn browser_ops.api:app --host 127.0.0.1 --port 8765
 ## Copy-paste curls (replace `RUN_ID` / `APPROVAL_ID` from JSON)
 
 ```bash
-export H="Authorization: Bearer demo-twitter-2026"
-curl -s http://127.0.0.1:8765/v1/health | jq .
+export H="Authorization: Bearer sk_demo_local"
+curl -s http://127.0.0.1:8080/v1/health | jq .
 
-curl -s -X POST http://127.0.0.1:8765/v1/evaluate-action \
+curl -s -X POST http://127.0.0.1:8080/v1/evaluate-action \
   -H "Content-Type: application/json" -H "$H" \
   -d '{"actor":"agent:demo","action":"list_files","context":{}}' | jq .
 
-curl -s -X POST http://127.0.0.1:8765/v1/evaluate-action \
+curl -s -X POST http://127.0.0.1:8080/v1/evaluate-action \
   -H "Content-Type: application/json" -H "$H" \
-  -d '{"actor":"agent:demo","action":"execute_browser_action","context":{"url":"https://example.com"}}' | jq .
+  -d '{"actor":"agent:marketing-bot","action":"publish_campaign","context":{"contains_pii":true}}' | jq .
 
-curl -s -X POST "http://127.0.0.1:8765/v1/approvals/APPROVAL_ID/confirm" -H "$H" | jq .
-curl -s "http://127.0.0.1:8765/v1/runs/RUN_ID/events" -H "$H" | jq .
+curl -s -X POST "http://127.0.0.1:8080/v1/approvals/APPROVAL_ID/confirm" -H "$H" | jq .
+curl -s "http://127.0.0.1:8080/v1/runs/RUN_ID/events" -H "$H" | jq .
 
-curl -s -X POST http://127.0.0.1:8765/v1/evaluate-action \
+curl -s -X POST http://127.0.0.1:8080/v1/evaluate-action \
   -H "Content-Type: application/json" -H "$H" \
-  -d '{"actor":"agent:demo","action":"disable_guardrails","context":{}}' | jq .
+  -d '{"actor":"ops-admin","action":"disable_guardrails","context":{}}' | jq .
 ```
+
+For a fully scripted (no-paste) walkthrough, just run [`examples/client_example.py`](../examples/client_example.py) against the same server.

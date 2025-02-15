@@ -14,6 +14,7 @@ def _now() -> str:
 @dataclass
 class RunRecord:
     run_id: str
+    workspace_id: str
     actor: str
     action: str
     context: dict[str, Any]
@@ -25,83 +26,80 @@ class RunRecord:
 
 
 class AuditStore:
+    """In-memory append-only event log with run lookups."""
+
     def __init__(self) -> None:
         self._lock = Lock()
         self._runs: dict[str, RunRecord] = {}
-        self._approvals: dict[str, tuple[str, str]] = {}  # approval_id -> (run_id, status)
+
+    def create_run(
+        self,
+        *,
+        workspace_id: str,
+        actor: str,
+        action: str,
+        context: dict[str, Any],
+        decision: str,
+        risk_score: int,
+        pending_approval: bool,
+    ) -> RunRecord:
+        run_id = str(uuid.uuid4())
+        record = RunRecord(
+            run_id=run_id,
+            workspace_id=workspace_id,
+            actor=actor,
+            action=action,
+            context=context,
+            decision=decision,
+            risk_score=risk_score,
+            status="awaiting_approval" if pending_approval else "completed",
+            approval_id=None,
+            events=[
+                {
+                    "ts": _now(),
+                    "event_type": "run_started",
+                    "actor": actor,
+                    "action": action,
+                },
+                {
+                    "ts": _now(),
+                    "event_type": "policy_evaluated",
+                    "decision": decision,
+                    "risk_score": risk_score,
+                    "reason": None,
+                },
+            ],
+        )
+        with self._lock:
+            self._runs[run_id] = record
+        return record
 
     def append_event(self, run_id: str, event_type: str, payload: dict[str, Any]) -> None:
         with self._lock:
             run = self._runs.get(run_id)
             if not run:
                 return
-            run.events.append({"ts": _now(), "type": event_type, **payload})
+            run.events.append({"ts": _now(), "event_type": event_type, **payload})
 
-    def create_run(
-        self,
-        actor: str,
-        action: str,
-        context: dict[str, Any],
-        decision: str,
-        risk_score: int,
-        approval_id: str | None,
-    ) -> RunRecord:
-        run_id = str(uuid.uuid4())
-        record = RunRecord(
-            run_id=run_id,
-            actor=actor,
-            action=action,
-            context=context,
-            decision=decision,
-            risk_score=risk_score,
-            status="awaiting_approval" if approval_id else "completed",
-            approval_id=approval_id,
-            events=[
-                {
-                    "ts": _now(),
-                    "type": "run_started",
-                    "actor": actor,
-                    "action": action,
-                },
-                {
-                    "ts": _now(),
-                    "type": "policy_evaluated",
-                    "decision": decision,
-                    "risk_score": risk_score,
-                },
-            ],
-        )
+    def mark_completed(self, run_id: str, *, outcome: str, by: str) -> RunRecord | None:
         with self._lock:
-            self._runs[run_id] = record
-            if approval_id:
-                self._approvals[approval_id] = (run_id, "pending")
-        return record
+            run = self._runs.get(run_id)
+            if not run:
+                return None
+            run.status = "completed"
+            run.events.append(
+                {
+                    "ts": _now(),
+                    "event_type": "run_completed",
+                    "outcome": outcome,
+                    "by": by,
+                }
+            )
+            return run
 
     def get_run(self, run_id: str) -> RunRecord | None:
         with self._lock:
             return self._runs.get(run_id)
 
-    def confirm_approval(self, approval_id: str) -> RunRecord | None:
-        with self._lock:
-            row = self._approvals.get(approval_id)
-            if not row or row[1] != "pending":
-                return None
-            run_id, _ = row
-            run = self._runs.get(run_id)
-            if not run:
-                return None
-            self._approvals[approval_id] = (run_id, "approved")
-            run.status = "completed"
-            run.events.append(
-                {
-                    "ts": _now(),
-                    "type": "approval_confirmed",
-                    "approval_id": approval_id,
-                    "by": "api_operator",
-                }
-            )
-            run.events.append({"ts": _now(), "type": "run_completed", "outcome": "approved_execution"})
-            return run
 
-
-store = AuditStore()
+audit = AuditStore()
