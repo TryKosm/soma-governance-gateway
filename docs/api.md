@@ -1,4 +1,6 @@
-# SomaOS Governance Gateway — API Reference (V1)
+# SomaOS — Governance Gateway API (V1)
+
+SomaOS is a governed execution platform for AI workflows. This API reference covers the Governance Gateway slice: policy evaluation, approval routing, and replayable audit events for each run.
 
 All `/v1/*` endpoints (except `/v1/health`) require an API key:
 

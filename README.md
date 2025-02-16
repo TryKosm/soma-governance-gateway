@@ -1,10 +1,10 @@
-# agentic-browser-ops-platform
+# SomaOS
 
-Platform scaffold for agentic browser operations with policy-aware execution and observability.
+SomaOS is a governed execution layer for AI and automation workflows. Instead of letting agents run actions unchecked, SomaOS enforces policy, routes sensitive steps through approvals, and keeps replayable audit trails for security and operations teams.
 
 ## SomaOS Governance Gateway
 
-**Why this exists.** Most “agent” products optimize for chat. The SomaOS edge is **governed execution**: every sensitive action a workflow takes can be policy-evaluated, optionally pause for a human, and emit a replayable audit trail. The Governance Gateway is a small public API + Python SDK that demonstrates that contract end-to-end, gated by a SomaOS-issued API key.
+**What this part is.** The Governance Gateway is the public API + Python SDK slice of SomaOS. It accepts workflow actions (`actor`, `action`, `context`), returns a policy decision (`allow`, `review_required`, `blocked`) with risk score, supports approval confirmation for gated actions, and exposes run/event replay for observability.
 
 ### Quickstart
 

@@ -3,9 +3,10 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agentic-browser-ops-platform"
+name = "somaos-governance-gateway"
 version = "0.2.0"
 requires-python = ">=3.10"
+description = "SomaOS Governance Gateway: policy, approvals, and audit replay for AI workflows."
 dependencies = [
     "fastapi>=0.115",
     "uvicorn[standard]>=0.32",
