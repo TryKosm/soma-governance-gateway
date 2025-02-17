@@ -1,5 +1,8 @@
 # SomaOS
 
+[![CI](https://github.com/TryKosm/agentic-browser-ops-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/TryKosm/agentic-browser-ops-platform/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 SomaOS is a governed execution layer for AI and automation workflows. Instead of letting agents run actions unchecked, SomaOS enforces policy, routes sensitive steps through approvals, and keeps replayable audit trails for security and operations teams.
 
 ## SomaOS Governance Gateway
@@ -39,6 +42,22 @@ OpenAPI is auto-published at [http://localhost:8080/docs](http://localhost:8080/
 
 Full reference and decision matrix: [docs/api.md](docs/api.md).
 
+### Architecture
+
+```mermaid
+flowchart LR
+  C[Client / SDK] --> A[API + Auth + Rate Limit]
+  A --> P[Policy + Risk Engine]
+  P --> D{Decision}
+  D -->|allow| R[Run Completed]
+  D -->|review_required| S[Approval Store]
+  S --> E[Approval Confirmed]
+  D -->|blocked| B[Blocked]
+  R --> L[Audit Event Log]
+  E --> L
+  B --> L
+```
+
 ### Two realistic examples
 
 - **Marketing workflow that needs review** — `agent:marketing-bot` calls `publish_campaign` over a 25 k-recipient PII list. The gateway returns `review_required` with an `approval_id`. A human (or downstream automation) calls `/v1/approvals/{id}/confirm` and the run completes with a clean `approval_confirmed` → `run_completed` audit pair.
@@ -71,12 +90,26 @@ print(client.get_events(decision.run_id))
 - `401` for invalid keys, `429` once the per-minute window is exhausted, `404` for cross-workspace reads.
 - V1 storage is env-backed so issuing a demo key is a one-liner; production deployments swap in a sqlite/postgres store without touching the API surface.
 
+### Production notes
+
+- State is currently in-memory (`approvals` + `audit`) for portability and demo speed.
+- For production, swap stores to PostgreSQL/Redis while keeping the API contract stable.
+- Add structured logging and request IDs before multi-instance deployment.
+- Put the service behind TLS + managed secrets for API key issuance/rotation.
+
 ### Running tests
 
 ```bash
 pytest -q                         # full suite
 make check                        # import smoke + pytest
 ```
+
+### Project standards
+
+- Changelog: [`CHANGELOG.md`](CHANGELOG.md)
+- Contributing guide: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- Security policy: [`SECURITY.md`](SECURITY.md)
+- License: [`LICENSE`](LICENSE)
 
 ### Local benchmark (V1, single process)
 
