@@ -1,37 +1,62 @@
-# agentic-browser-ops-platform
+# SomaOS Governance Gateway
 
-SomaOS Governance Gateway: API-key gated policy checks, approval routing, and replayable audit trails for AI workflow execution.
+SomaOS Governance Gateway is an API-key-gated governance layer for AI workflow execution: policy checks, approval routing, and replayable audit trails.
 
 [![CI](https://github.com/TryKosm/agentic-browser-ops-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/TryKosm/agentic-browser-ops-platform/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Why this exists
 
-This project is part of the SomaOS ecosystem and focuses on reliable, production-oriented building blocks for AI workflows.
+Most AI workflow systems optimize for generation quality but leave operational governance as an afterthought. This gateway makes governance a first-class API primitive:
+
+- deterministic policy decisions (`allow`, `review_required`, `blocked`)
+- explicit human-in-the-loop approval flow
+- replayable run/event timeline for observability and audits
 
 ## Quickstart
 
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+export SOMAOS_DEMO_KEY="sk_demo_local"
+uvicorn browser_ops.api:app --port 8080
+```
 
-tbd
+## API endpoints
 
-## Usage
+- `GET /v1/health`
+- `POST /v1/evaluate-action`
+- `POST /v1/approvals/{approvalId}/confirm`
+- `GET /v1/runs/{runId}`
+- `GET /v1/runs/{runId}/events`
 
-Add a concise runnable example for the main workflow in this repository.
+Full details: [`docs/api.md`](docs/api.md)
 
-## Architecture
+## Example flow
 
-Document the core components and data flow for this project.
+```bash
+export H="Authorization: Bearer sk_demo_local"
+
+# evaluate action
+curl -s -X POST http://127.0.0.1:8080/v1/evaluate-action \
+  -H "Content-Type: application/json" -H "$H" \
+  -d '{"actor":"agent:marketing-bot","action":"publish_campaign","context":{"contains_pii":true}}'
+```
+
+Also see [`examples/client_example.py`](examples/client_example.py) and [`docs/twitter-demo-script.md`](docs/twitter-demo-script.md).
 
 ## Roadmap
 
-- [ ] Stabilize v0.1 contract and improve docs
-- [ ] Expand test coverage and CI signals
-- [ ] Add one benchmark or reliability metric
+- [ ] Persist approvals + audit events to Postgres ([#1](https://github.com/TryKosm/agentic-browser-ops-platform/issues/1))
+- [ ] Add signed `approval_required` webhooks ([#2](https://github.com/TryKosm/agentic-browser-ops-platform/issues/2))
+- [ ] Publish Postman collection + OpenAPI export ([#3](https://github.com/TryKosm/agentic-browser-ops-platform/issues/3))
 
 ## Development
 
-- Run tests locally before opening a PR.
-- Keep changes scoped and update docs for API/behavior changes.
+```bash
+pytest -q
+make check
+```
 
 ## License
 
