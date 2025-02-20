@@ -1,36 +1,9 @@
 # Contributing
 
-Thanks for contributing to SomaOS Governance Gateway.
+Thanks for contributing to AI Governance Gateway.
 
-## Development setup
+1. Fork the repository and create a feature branch.
+2. Keep changes focused and well-described in commit messages.
+3. Open a pull request with context on what changed and why.
 
-```bash
-cd /path/to/soma-governance-gateway
-python -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
-```
-
-## Running checks
-
-```bash
-pytest -q
-make check
-```
-
-## Pull request expectations
-
-- Keep changes scoped and reviewable.
-- Add or update tests for behavior changes.
-- Update docs (`README.md`, `docs/api.md`) if API behavior changes.
-- Use clear commit messages focused on intent.
-
-## API contract guidance
-
-The core endpoints under `/v1/*` are public-facing. Avoid breaking response fields without documenting migration notes.
-
-## Code style
-
-- Prefer clear, deterministic policy logic.
-- Keep side effects explicit in approval/audit flows.
-- Maintain meaningful event payloads (`event_type`, `ts`, reason/context).
+By contributing, you agree that your contributions are licensed under the same license as the project.

@@ -5,16 +5,16 @@ Use this while screen-recording: terminal on the left, optional browser with `/d
 ## Setup (before record)
 
 ```bash
-cd soma-governance-gateway
+cd ai-governance-gateway
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-export SOMAOS_DEMO_KEY="sk_demo_local"
+export GOVERNANCE_DEMO_KEY="sk_demo_local"
 uvicorn browser_ops.api:app --host 127.0.0.1 --port 8080
 ```
 
 ## Voice-over beats
 
-1. **Hook** — “Agents can browse and act. SomaOS-style governance means every sensitive action hits policy first: allow, human review, or hard block—with an audit trail you can replay.”
+1. **Hook** — “Agents can browse and act. Governance-first design means every sensitive action hits policy first: allow, human review, or hard block—with an audit trail you can replay.”
 2. **Health** — Show `GET /v1/health` (no key) to prove the service is up.
 3. **Safe path** — `evaluate-action` with `list_files`: instant **allow**, no approval.
 4. **Risk path** — Same API with `execute_browser_action`: **review_required** plus `approval_id`.

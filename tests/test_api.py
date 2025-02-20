@@ -10,9 +10,9 @@ from browser_ops.api import create_app
 
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
-    monkeypatch.setenv("SOMAOS_DEMO_KEY", "sk_test_demo")
-    monkeypatch.delenv("SOMAOS_API_KEYS", raising=False)
-    monkeypatch.delenv("SOMAOS_API_KEYS_JSON", raising=False)
+    monkeypatch.setenv("GOVERNANCE_DEMO_KEY", "sk_test_demo")
+    monkeypatch.delenv("GOVERNANCE_API_KEYS", raising=False)
+    monkeypatch.delenv("GOVERNANCE_API_KEYS_JSON", raising=False)
     return TestClient(create_app())
 
 
@@ -24,7 +24,7 @@ def auth() -> dict[str, str]:
 def test_health_no_auth(client: TestClient) -> None:
     r = client.get("/v1/health")
     assert r.status_code == 200
-    assert r.json() == {"status": "ok", "service": "somaos-governance-gateway"}
+    assert r.json() == {"status": "ok", "service": "ai-governance-gateway"}
 
 
 def test_evaluate_requires_auth(client: TestClient) -> None:
@@ -123,11 +123,11 @@ def test_unknown_run_is_404(client: TestClient, auth: dict[str, str]) -> None:
 
 def test_rate_limit_returns_429(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(
-        "SOMAOS_API_KEYS_JSON",
+        "GOVERNANCE_API_KEYS_JSON",
         '{"sk_tight": {"workspace_id": "ws_tight", "rate_limit_tier": "free"}}',
     )
-    monkeypatch.delenv("SOMAOS_DEMO_KEY", raising=False)
-    monkeypatch.delenv("SOMAOS_API_KEYS", raising=False)
+    monkeypatch.delenv("GOVERNANCE_DEMO_KEY", raising=False)
+    monkeypatch.delenv("GOVERNANCE_API_KEYS", raising=False)
     c = TestClient(create_app())
     headers = {"Authorization": "Bearer sk_tight"}
     last = None
@@ -141,11 +141,11 @@ def test_rate_limit_returns_429(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_throughput_smoke(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
     """Local benchmark; not a strict SLA assertion, just a guardrail."""
     monkeypatch.setenv(
-        "SOMAOS_API_KEYS_JSON",
+        "GOVERNANCE_API_KEYS_JSON",
         '{"sk_bench": {"workspace_id": "ws_bench", "rate_limit_tier": "enterprise"}}',
     )
-    monkeypatch.delenv("SOMAOS_DEMO_KEY", raising=False)
-    monkeypatch.delenv("SOMAOS_API_KEYS", raising=False)
+    monkeypatch.delenv("GOVERNANCE_DEMO_KEY", raising=False)
+    monkeypatch.delenv("GOVERNANCE_API_KEYS", raising=False)
     c = TestClient(create_app())
     headers = {"Authorization": "Bearer sk_bench"}
 

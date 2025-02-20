@@ -1,8 +1,8 @@
-"""Tiny Python SDK for the SomaOS Governance Gateway.
+"""Tiny Python SDK for the AI Governance Gateway.
 
 Usage:
-    from somaos_client import SomaOSClient
-    client = SomaOSClient("http://localhost:8080", api_key="sk_demo_...")
+    from gateway_client import GovernanceGatewayClient
+    client = GovernanceGatewayClient("http://localhost:8080", api_key="sk_demo_...")
     decision = client.evaluate_action("ops-admin", "export_customer_data", {"region": "EU"})
 """
 
@@ -14,11 +14,11 @@ from typing import Any
 import httpx
 
 
-class SomaOSError(RuntimeError):
+class GatewayError(RuntimeError):
     """Raised when the gateway returns a non-2xx response."""
 
     def __init__(self, status_code: int, detail: Any) -> None:
-        super().__init__(f"SomaOS error {status_code}: {detail}")
+        super().__init__(f"Gateway error {status_code}: {detail}")
         self.status_code = status_code
         self.detail = detail
 
@@ -33,8 +33,8 @@ class EvaluateDecision:
     workspace_id: str
 
 
-class SomaOSClient:
-    """Minimal synchronous client for the SomaOS Governance Gateway."""
+class GovernanceGatewayClient:
+    """Minimal synchronous client for the AI Governance Gateway."""
 
     def __init__(self, base_url: str, api_key: str, *, timeout: float = 30.0) -> None:
         self._base_url = base_url.rstrip("/")
@@ -52,7 +52,7 @@ class SomaOSClient:
                     detail = response.json()
                 except Exception:  # noqa: BLE001
                     detail = response.text
-                raise SomaOSError(response.status_code, detail)
+                raise GatewayError(response.status_code, detail)
             return response.json()
 
     def health(self) -> dict[str, Any]:

@@ -22,12 +22,12 @@ _TIERS: dict[str, int] = {"free": 30, "pro": 120, "enterprise": 600}
 
 
 def _load_keymap() -> dict[str, ApiKeyPrincipal]:
-    """Load keys from `SOMAOS_API_KEYS_JSON` (preferred) or simpler env vars.
+    """Load keys from `GOVERNANCE_API_KEYS_JSON` (preferred) or simpler env vars.
 
-    `SOMAOS_API_KEYS_JSON` example:
+    `GOVERNANCE_API_KEYS_JSON` example:
       {"sk_demo_123": {"workspace_id": "ws_demo", "rate_limit_tier": "pro"}}
     """
-    raw = os.environ.get("SOMAOS_API_KEYS_JSON", "").strip()
+    raw = os.environ.get("GOVERNANCE_API_KEYS_JSON", "").strip()
     keymap: dict[str, ApiKeyPrincipal] = {}
     if raw:
         try:
@@ -43,7 +43,7 @@ def _load_keymap() -> dict[str, ApiKeyPrincipal]:
                 rate_limit_per_minute=_TIERS.get(tier, _TIERS["free"]),
             )
 
-    fallback_keys = os.environ.get("SOMAOS_API_KEYS", "")
+    fallback_keys = os.environ.get("GOVERNANCE_API_KEYS", "")
     for k in (s.strip() for s in fallback_keys.split(",") if s.strip()):
         keymap.setdefault(
             k,
@@ -55,7 +55,7 @@ def _load_keymap() -> dict[str, ApiKeyPrincipal]:
             ),
         )
 
-    demo = os.environ.get("SOMAOS_DEMO_KEY", "").strip()
+    demo = os.environ.get("GOVERNANCE_DEMO_KEY", "").strip()
     if demo:
         keymap.setdefault(
             demo,

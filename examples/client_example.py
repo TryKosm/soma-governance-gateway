@@ -1,8 +1,8 @@
-"""Two end-to-end SomaOS Governance Gateway scenarios.
+"""Two end-to-end AI Governance Gateway scenarios.
 
 Start the gateway in another terminal:
 
-    export SOMAOS_DEMO_KEY="sk_demo_local"
+    export GOVERNANCE_DEMO_KEY="sk_demo_local"
     uvicorn browser_ops.api:app --port 8080
 
 Then run:
@@ -19,10 +19,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "sdk" / "python"))
 
-from somaos_client import SomaOSClient  # noqa: E402
+from gateway_client import GovernanceGatewayClient  # noqa: E402
 
 
-def marketing_workflow_review(client: SomaOSClient) -> None:
+def marketing_workflow_review(client: GovernanceGatewayClient) -> None:
     print("\n=== Scenario 1: marketing campaign requires review ===")
     decision = client.evaluate_action(
         actor="agent:marketing-bot",
@@ -44,7 +44,7 @@ def marketing_workflow_review(client: SomaOSClient) -> None:
         print(f"  - {ev['event_type']:<22} {ev}")
 
 
-def operations_action_blocked(client: SomaOSClient) -> None:
+def operations_action_blocked(client: GovernanceGatewayClient) -> None:
     print("\n=== Scenario 2: operations action blocked by policy ===")
     decision = client.evaluate_action(
         actor="ops-admin",
@@ -57,12 +57,12 @@ def operations_action_blocked(client: SomaOSClient) -> None:
 
 
 def main() -> None:
-    base_url = os.environ.get("SOMAOS_BASE_URL", "http://127.0.0.1:8080")
-    api_key = os.environ.get("SOMAOS_DEMO_KEY") or os.environ.get("SOMAOS_API_KEY")
+    base_url = os.environ.get("GOVERNANCE_BASE_URL", "http://127.0.0.1:8080")
+    api_key = os.environ.get("GOVERNANCE_DEMO_KEY") or os.environ.get("GOVERNANCE_API_KEY")
     if not api_key:
-        raise SystemExit("Set SOMAOS_DEMO_KEY or SOMAOS_API_KEY before running this example.")
+        raise SystemExit("Set GOVERNANCE_DEMO_KEY or GOVERNANCE_API_KEY before running this example.")
 
-    client = SomaOSClient(base_url, api_key=api_key)
+    client = GovernanceGatewayClient(base_url, api_key=api_key)
     print(f"health: {client.health()}")
 
     marketing_workflow_review(client)

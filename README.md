@@ -1,12 +1,12 @@
-# Soma Governance Gateway
+# AI Governance Gateway
 
-Governed AI workflows: policy checks, approvals, audit trails.
+Policy checks, human approvals, and audit trails for AI workflows.
 
-![CI](https://github.com/TryKosm/soma-governance-gateway/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/TryKosm/ai-governance-gateway/actions/workflows/ci.yml/badge.svg)
 
-SomaOS Governance Gateway is an API-key-gated governance layer for AI workflow execution: policy checks, approval routing, and replayable audit trails.
+An API-key-gated governance layer for AI workflow execution: policy checks, approval routing, and replayable audit trails.
 
-[![CI](https://github.com/TryKosm/soma-governance-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/TryKosm/soma-governance-gateway/actions/workflows/ci.yml)
+[![CI](https://github.com/TryKosm/ai-governance-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/TryKosm/ai-governance-gateway/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Why this exists
@@ -22,7 +22,7 @@ Most AI workflow systems optimize for generation quality but leave operational g
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-export SOMAOS_DEMO_KEY="sk_demo_local"
+export GOVERNANCE_DEMO_KEY="sk_demo_local"
 uvicorn browser_ops.api:app --port 8080
 ```
 
@@ -51,9 +51,9 @@ Also see [`examples/client_example.py`](examples/client_example.py) and [`docs/t
 
 ## Roadmap
 
-- [ ] Persist approvals + audit events to Postgres ([#1](https://github.com/TryKosm/soma-governance-gateway/issues/1))
-- [ ] Add signed `approval_required` webhooks ([#2](https://github.com/TryKosm/soma-governance-gateway/issues/2))
-- [ ] Publish Postman collection + OpenAPI export ([#3](https://github.com/TryKosm/soma-governance-gateway/issues/3))
+- [ ] Persist approvals + audit events to Postgres ([#1](https://github.com/TryKosm/ai-governance-gateway/issues/1))
+- [ ] Add signed `approval_required` webhooks ([#2](https://github.com/TryKosm/ai-governance-gateway/issues/2))
+- [ ] Publish Postman collection + OpenAPI export ([#3](https://github.com/TryKosm/ai-governance-gateway/issues/3))
 
 ## Development
 

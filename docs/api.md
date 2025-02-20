@@ -1,11 +1,11 @@
-# SomaOS — Governance Gateway API (V1)
+# AI Governance Gateway API (V1)
 
-SomaOS is a governed execution platform for AI workflows. This API reference covers the Governance Gateway slice: policy evaluation, approval routing, and replayable audit events for each run.
+The AI Governance Gateway is a governed execution layer for AI workflows. This API reference covers policy evaluation, approval routing, and replayable audit events for each run.
 
 All `/v1/*` endpoints (except `/v1/health`) require an API key:
 
 ```http
-Authorization: Bearer <SOMAOS_API_KEY>
+Authorization: Bearer <GOVERNANCE_API_KEY>
 ```
 
 Keys map to a `workspace_id` and a `rate_limit_tier`. Cross-workspace reads return `404`.
@@ -35,7 +35,7 @@ Keys map to a `workspace_id` and a `rate_limit_tier`. Cross-workspace reads retu
 No auth. Liveness probe.
 
 ```json
-{ "status": "ok", "service": "somaos-governance-gateway" }
+{ "status": "ok", "service": "ai-governance-gateway" }
 ```
 
 ## `POST /v1/evaluate-action`
@@ -111,13 +111,13 @@ Choose one of:
 
 ```bash
 # 1. Single demo key (auto-mapped to ws_demo / pro tier)
-export SOMAOS_DEMO_KEY="sk_demo_pick_anything"
+export GOVERNANCE_DEMO_KEY="sk_demo_pick_anything"
 
 # 2. Comma-separated keys (default ws_default / free tier)
-export SOMAOS_API_KEYS="sk_alpha,sk_beta"
+export GOVERNANCE_API_KEYS="sk_alpha,sk_beta"
 
 # 3. Full JSON map with per-key workspace + tier
-export SOMAOS_API_KEYS_JSON='{"sk_team_eu":{"workspace_id":"ws_eu","rate_limit_tier":"enterprise"}}'
+export GOVERNANCE_API_KEYS_JSON='{"sk_team_eu":{"workspace_id":"ws_eu","rate_limit_tier":"enterprise"}}'
 ```
 
 Tiers: `free` (30 rpm), `pro` (120 rpm), `enterprise` (600 rpm).

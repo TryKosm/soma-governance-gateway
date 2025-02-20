@@ -59,7 +59,7 @@ class EventsResponse(BaseModel):
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="SomaOS Governance Gateway",
+        title="AI Governance Gateway",
         version="1.0.0",
         description=(
             "API-key gated policy decisions, human-in-the-loop approvals, "
@@ -69,7 +69,7 @@ def create_app() -> FastAPI:
 
     @app.get("/v1/health")
     def health() -> dict[str, str]:
-        return {"status": "ok", "service": "somaos-governance-gateway"}
+        return {"status": "ok", "service": "ai-governance-gateway"}
 
     @app.post("/v1/evaluate-action", response_model=EvaluateActionResponse)
     def evaluate_action(

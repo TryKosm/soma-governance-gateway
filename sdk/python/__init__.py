@@ -1,3 +1,3 @@
-from .somaos_client import EvaluateDecision, SomaOSClient, SomaOSError
+from .gateway_client import EvaluateDecision, GatewayError, GovernanceGatewayClient
 
-__all__ = ["EvaluateDecision", "SomaOSClient", "SomaOSError"]
+__all__ = ["EvaluateDecision", "GatewayError", "GovernanceGatewayClient"]
