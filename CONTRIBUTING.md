@@ -5,7 +5,7 @@ Thanks for contributing to SomaOS Governance Gateway.
 ## Development setup
 
 ```bash
-cd /path/to/agentic-browser-ops-platform
+cd /path/to/soma-governance-gateway
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"

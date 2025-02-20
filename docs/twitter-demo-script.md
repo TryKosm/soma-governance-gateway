@@ -5,7 +5,7 @@ Use this while screen-recording: terminal on the left, optional browser with `/d
 ## Setup (before record)
 
 ```bash
-cd agentic-browser-ops-platform
+cd soma-governance-gateway
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 export SOMAOS_DEMO_KEY="sk_demo_local"
