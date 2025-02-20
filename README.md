@@ -1,5 +1,7 @@
 # SomaOS Governance Gateway
 
+![CI](https://github.com/TryKosm/agentic-browser-ops-platform/actions/workflows/ci.yml/badge.svg)
+
 SomaOS Governance Gateway is an API-key-gated governance layer for AI workflow execution: policy checks, approval routing, and replayable audit trails.
 
 [![CI](https://github.com/TryKosm/agentic-browser-ops-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/TryKosm/agentic-browser-ops-platform/actions/workflows/ci.yml)
